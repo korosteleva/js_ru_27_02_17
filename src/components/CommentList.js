@@ -38,8 +38,7 @@ export default class CommentList extends Component {
             return null;
         }
 
-        if (!comments) {
-            //все хорошо, но по сути comments [] это тоже 'No comments yet'
+        if (!comments || !comments.length) {
             return <p>No comments yet</p>;
         }
 
