@@ -12,9 +12,10 @@ export default (CustomComponent) => class AccordionComponent extends React.Compo
     }
 
     handleAccordion(openedId) {
+        const newOpenedId = this.state.openedId !== openedId ? openedId : null;
         return () => {
             this.setState({
-                openedId
+                openedId: newOpenedId
             });
         };
     }
