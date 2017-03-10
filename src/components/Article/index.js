@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import {findDOMNode} from 'react-dom'
-import CommentList from '../CommentList'
+import CommentList from '../CommentList/index'
 import CSSTransition from 'react-addons-css-transition-group'
 import './style.css'
 
