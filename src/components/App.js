@@ -17,7 +17,7 @@ class App extends Component {
             <div>
                 <Counter />
                 Enter your name: <input type="text" value={this.state.text} onChange={this.handleTextChange}/>
-                <Filters articles={[]}/>
+                <Filters />
                 <ArticleList />
                 <Chart />
             </div>

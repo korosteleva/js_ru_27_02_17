@@ -5,29 +5,37 @@ import 'react-select/dist/react-select.css'
 
 class SelectFilter extends Component {
     static propTypes = {
-        articles: PropTypes.array.isRequired
+        articles: PropTypes.array.isRequired,
+        selectedArticles: PropTypes.array,
+        onSelect: PropTypes.func.isRequired
     };
 
-    state = {
-        selected: null
+    constructor(props) {
+        super(props);
+
+        this.handleChange = this.handleChange.bind(this);
     }
 
-    handleChange = selected => this.setState({ selected })
-
     render() {
-        const { selected } = this.state
-        const { articles } = this.props
+        const { articles, selectedArticles } = this.props;
+
         const options = articles.map(article => ({
             label: article.title,
             value: article.id
-        }))
+        }));
 
-        return <Select
-            options={options}
-            value={selected}
-            multi={true}
-            onChange={this.handleChange}
-        />
+        return (
+            <Select
+                options={options}
+                value={selectedArticles}
+                multi={true}
+                onChange={this.handleChange} />
+        );
+    }
+
+    handleChange(articles) {
+        const { onSelect } = this.props;
+        onSelect({ articles });
     }
 }
 

@@ -1,17 +1,21 @@
-import {INCREMENT, DELETE_ARTICLE} from '../constants'
+import { INCREMENT, DELETE_ARTICLE, APPLY_FILTER } from '../constants'
 
 export function increment() {
-    const action = {
+    return {
         type: INCREMENT
-    }
-
-    return action
+    };
 }
-
 
 export function deleteArticle(id) {
     return {
         type: DELETE_ARTICLE,
         payload: { id }
-    }
+    };
+}
+
+export function applyFilter(payload) {
+    return {
+        type: APPLY_FILTER,
+        payload
+    };
 }
