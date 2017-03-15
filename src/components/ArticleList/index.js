@@ -15,6 +15,7 @@ class ArticleList extends Component {
 
     render() {
         const { toggleOpenItem, isItemOpened } = this.props;
+        //ок, но еще лучше делать фильтрацию в коннекте
         const filteredArticles = this.applyFilters();
 
         return (
