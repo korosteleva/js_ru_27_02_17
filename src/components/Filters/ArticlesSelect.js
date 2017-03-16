@@ -6,7 +6,7 @@ import 'react-select/dist/react-select.css'
 class SelectFilter extends Component {
     static propTypes = {
         articles: PropTypes.array.isRequired,
-        selectedArticles: PropTypes.array,
+        articleIds: PropTypes.array,
         onSelect: PropTypes.func.isRequired
     };
 
@@ -17,7 +17,7 @@ class SelectFilter extends Component {
     }
 
     render() {
-        const { articles, selectedArticles } = this.props;
+        const { articles, articleIds } = this.props;
 
         const options = articles.map(article => ({
             label: article.title,
@@ -27,7 +27,7 @@ class SelectFilter extends Component {
         return (
             <Select
                 options={options}
-                value={selectedArticles}
+                value={articleIds}
                 multi={true}
                 onChange={this.handleChange} />
         );

@@ -4,6 +4,7 @@ import Article from '../Article/index'
 import CSSTransition from 'react-addons-css-transition-group'
 import accrdion from '../../decorators/accordion'
 import './style.css'
+import filter from '../../utils/filter';
 
 class ArticleList extends Component {
     static propTypes = {
@@ -14,10 +15,7 @@ class ArticleList extends Component {
     };
 
     render() {
-        const { toggleOpenItem, isItemOpened } = this.props;
-        //ок, но еще лучше делать фильтрацию в коннекте
-        const filteredArticles = this.applyFilters();
-
+        const { toggleOpenItem, isItemOpened, articles } = this.props;
         return (
             <CSSTransition component="ul"
                 transitionName="article-list"
@@ -25,7 +23,7 @@ class ArticleList extends Component {
                 transitionAppearTimeout={100}
                 transitionEnterTimeout={500}
                 transitionLeaveTimeout={300} >
-                {filteredArticles.map(article => {
+                {articles.map(article => {
                     return (
                         <li key={article.id}>
                             <Article
@@ -38,28 +36,11 @@ class ArticleList extends Component {
             </CSSTransition>
         )
     }
-
-    applyFilters() {
-        const { articles, filters } = this.props;
-        let filterFromDate = filters.from ? new Date(filters.from).getTime() : null;
-        let filterToDate = filters.to ? new Date(filters.to).getTime() : null;
-
-        return articles.filter(article => {
-            let articleDate = new Date(article.date).getTime();
-            let filteredArticle = filters.articles.filter(filterTag => filterTag.value === article.id);
-
-            let conditionFromDate = filterFromDate ? articleDate >= filterFromDate : true;
-            let conditionToDate = filterToDate ? articleDate <= filterToDate : true;
-            let conditionArticles = filters.articles.length ? filteredArticle.length : true;
-
-            return conditionFromDate && conditionToDate && conditionArticles;
-        });
-    }
 }
 
 const mapStateToProps = state => {
     return {
-        articles: state.articles,
+        articles: filter(state.articles, state.filters),
         filters: state.filters
     }
 };

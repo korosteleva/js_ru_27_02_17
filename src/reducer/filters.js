@@ -3,8 +3,7 @@ import { APPLY_FILTER } from '../constants';
 const initState = {
     from: null,
     to: null,
-    //а здесь лучше просто id хранить, а не все что в Select приходит
-    articles: []
+    articleIds: []
 };
 
 export default (state = initState, action) => {

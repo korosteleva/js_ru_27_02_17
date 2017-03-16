@@ -15,6 +15,7 @@ class Filters extends Component {
         super(props);
 
         this.handleFilterChange = this.handleFilterChange.bind(this);
+        this.handleSelectChange = this.handleSelectChange.bind(this);
     }
 
     render() {
@@ -24,8 +25,8 @@ class Filters extends Component {
             <div>
                 <ArticlesSelect
                     articles={articles}
-                    selectedArticles={filters.articles}
-                    onSelect={this.handleFilterChange} />
+                    articleIds={filters.articleIds}
+                    onSelect={this.handleSelectChange} />
                 <DateRange
                     from={filters.from}
                     to={filters.to}
@@ -37,6 +38,14 @@ class Filters extends Component {
     handleFilterChange(filtersObject) {
         const { applyFilter } = this.props;
         applyFilter(filtersObject);
+    }
+
+    handleSelectChange(selectedArticles) {
+        const articleIds = selectedArticles.articles.map(articleInfo => articleInfo.value);
+        const { applyFilter } = this.props;
+        applyFilter({
+            articleIds
+        });
     }
 }
 
