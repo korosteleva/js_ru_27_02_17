@@ -1,39 +1,45 @@
 import React, { Component, PropTypes } from 'react'
+import { connect } from 'react-redux';
 import Comment from './Comment'
 import toggleOpen from '../decorators/toggleOpen'
 import NewCommentForm from './NewCommentForm'
+import { loadCommentsForArticle } from '../AC'
+import Loader from './Loader';
 
 class CommentList extends Component {
 
     static propTypes = {
-        article: PropTypes.object.isRequired
-    }
+        article: PropTypes.object.isRequired,
+        loading: PropTypes.bool.isRequired,
+        error: PropTypes.array
+    };
 
-    componentDidUpdate() {
-        this.size = this.container.getBoundingClientRect()
+    static defaultProps = {
+        loading: false
+    };
+
+    componentWillReceiveProps({ isOpen, article, loadCommentsForArticle, loading}) {
+        if (!this.props.isOpen && isOpen && !loading && !article.commentsLoaded) {
+            loadCommentsForArticle(article.id);
+        }
     }
 
     render() {
-        const {isOpen, toggleOpen} = this.props
-//        console.log('---', this.size)
+        const { isOpen, toggleOpen, error } = this.props;
+        if (error) {
+            return <h4>{error}</h4>;
+        }
         return (
-            <div ref={this.getContainerRef}>
+            <div>
                 <a href="#" onClick={toggleOpen}>{isOpen ? 'hide' : 'show'} comments</a>
                 {this.getBody()}
             </div>
         )
     }
 
-    getContainerRef = (ref) => {
-        this.container = ref
-        if (ref) {
-            this.size = ref.getBoundingClientRect()
-        }
-    }
-
     getBody() {
-        const {article, isOpen} = this.props
-        if (!isOpen) return null
+        const { article, isOpen, loading } = this.props;
+        if (!isOpen) return null;
 
         if (!article.comments || !article.comments.length) {
             return <div>
@@ -42,6 +48,10 @@ class CommentList extends Component {
                 </h3>
                 <NewCommentForm articleId={article.id} />
             </div>
+        }
+
+        if (loading) {
+            return <Loader />;
         }
 
         const commentItems = article.comments.map(id => <li key={id}><Comment id={id} /></li>)
@@ -55,5 +65,11 @@ class CommentList extends Component {
         )
     }
 }
+const mapStateToProps = (state) => {
+    return {
+        loading: state.comments.loading,
+        error: state.comments.error
+    }
+}
 
-export default toggleOpen(CommentList)
+export default connect(mapStateToProps, { loadCommentsForArticle })(toggleOpen(CommentList))
