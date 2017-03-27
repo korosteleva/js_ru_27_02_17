@@ -10,6 +10,7 @@ const CommentModel = Record({
 
 const DefaultReducerState = Record({
     entities: new Map({}),
+    //здесь так просто уже не выйдет, ведь ты загружаешь не все комменты сразу, а отдельно для каждой статьи
     loading: false,
     error: null
 });
