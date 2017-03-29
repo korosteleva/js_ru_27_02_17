@@ -1,5 +1,5 @@
 import {INCREMENT, DELETE_ARTICLE, CHANGE_DATE_RANGE, CHANGE_SELECTION, ADD_COMMENT,
-    LOAD_ALL_ARTICLES, LOAD_ARTICLE_BY_ID, LOAD_ARTICLE_COMMENTS, START, SUCCESS, FAIL} from '../constants'
+    LOAD_ALL_ARTICLES, LOAD_ARTICLE_BY_ID, LOAD_ARTICLE_COMMENTS, START, SUCCESS, FAIL, COMMENTS_PER_PAGE, LOAD_COMMENT_BY_PAGE, RENDER_COMMENT_BY_PAGE} from '../constants'
 import $ from 'jquery'
 
 export function increment() {
@@ -90,4 +90,38 @@ export function loadArticleById(id) {
                 }))
         }, 1000)
     }
+}
+
+export function loadComments(page) {
+    return (dispatch) => {
+        const offset = (page - 1) * COMMENTS_PER_PAGE;
+
+        dispatch({
+            type: LOAD_COMMENT_BY_PAGE + START,
+            payload: { page }
+        });
+
+        setTimeout(() => {
+            $.get(`/api/comment?limit=${COMMENTS_PER_PAGE}&offset=${offset}`)
+                .done(response => dispatch({
+                    type: LOAD_COMMENT_BY_PAGE + SUCCESS,
+                    payload: { response, page }
+                }))
+                .fail(error => dispatch({
+                    type: LOAD_COMMENT_BY_PAGE + FAIL,
+                    payload: { error, page }
+                }))
+        }, 1000)
+    }
+}
+
+export function renderComments(page) {
+    return (dispatch) => {
+        const offset = (page - 1) * COMMENTS_PER_PAGE;
+
+        dispatch({
+            type: RENDER_COMMENT_BY_PAGE,
+            payload: { page, offset }
+        });
+    };
 }

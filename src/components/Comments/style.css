@@ -1,0 +1,8 @@
+.pagination {
+    padding: 5px;
+    margin: 0 5px;
+}
+
+.pagination.active {
+    color: red;
+}
