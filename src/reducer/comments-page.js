@@ -29,6 +29,7 @@ export default (comments = new DefaultReducerState(), action) => {
         case LOAD_COMMENT_BY_PAGE + SUCCESS: {
             const currentPageRecords = arrToMap(payload.response.records, CommentModel);
             const loadedPages = comments.get('loadedPages');
+            //тебе лучше Immutable Set подойдет, но опять же - достаточно сложно
             const newLoadedPages = !loadedPages.includes(payload.page) ?
                 loadedPages.concat(payload.page) :
                 loadedPages;
