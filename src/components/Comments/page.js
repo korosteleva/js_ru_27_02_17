@@ -8,6 +8,7 @@ import './style.css'
 
 class CommentsPage extends Component {
     static propTypes = {
+        //не нужно столько всего в компоненте, можешь часть расчитать в mapStateToProps
         comments: PropTypes.array,
         loading: PropTypes.bool,
         loadedPages: PropTypes.array,
