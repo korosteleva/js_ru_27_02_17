@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react'
-import {BrowserRouter as Router, Route, Redirect, Switch} from 'react-router-dom'
-import {ConnectedRouter} from 'react-router-redux'
+import {Route, Redirect, Switch} from 'react-router-dom'
 import {connect} from 'react-redux'
 import ArticlesPage from './ArticlesPage'
 import NotFound from './NotFound'
@@ -9,23 +8,42 @@ import Counter from './Counter'
 import CommentsPage from './CommentsPage'
 import Menu, {MenuItem} from './Menu/index'
 import {loadAllArticles} from '../AC'
-import history from '../history'
+import dictionary from '../dictionary';
+
+const LOCATIONS = ['ru', 'en'];
 
 class App extends Component {
     static propTypes = {
+        location: PropTypes.string
+    };
+
+    static defaultProps = {
+        location: 'en'
     };
 
     static childContextTypes = {
-        user: PropTypes.string
-    }
+        user: PropTypes.string,
+        location: PropTypes.oneOf(LOCATIONS),
+        dictionary: PropTypes.object
+    };
 
     state = {
         text: ''
-    }
+    };
 
     getChildContext() {
         return {
-            user: this.state.text
+            user: this.state.text,
+            location: this.props.location,
+            dictionary: dictionary[this.props.location]
+        }
+    }
+
+    constructor(props) {
+        super(props);
+
+        if (!LOCATIONS.includes(props.location)) {
+            throw new Error('Wrong location!');
         }
     }
 
@@ -34,27 +52,37 @@ class App extends Component {
     }
 
     render() {
+        const { location, match: { url } } = this.props;
         return (
-            <ConnectedRouter history={history}>
-                <div>
-                    Enter your name: <input type="text" value={this.state.text} onChange={this.handleTextChange}/>
-                    <Menu>
-                        <MenuItem path="/counter"/>
-                        <MenuItem path="/filters"/>
-                        <MenuItem path="/articles"/>
-                        <MenuItem path="/comments"/>
-                    </Menu>
-                    <Switch>
-                        <Route path="/counter" component={Counter} exact />
-                        <Route path="/filters" component={Filters} />
-                        <Route path="/articles" component={ArticlesPage} />
-                        <Route path="/comments/:page" component={CommentsPage} />
-                        <Redirect from="/comments" to="/comments/1"/>
-                        <Route path="*" component={NotFound} />
-                    </Switch>
-                </div>
-            </ConnectedRouter>
+            <div>
+                {this.renderLocalization()}
+                {dictionary[location]['enterYourName']}: <input type="text" value={this.state.text} onChange={this.handleTextChange}/>
+                <Menu>
+                    <MenuItem path={`${url}/counter`} />
+                    <MenuItem path={`${url}/filters`} />
+                    <MenuItem path={`${url}/articles`} />
+                    <MenuItem path={`${url}/comments`} />
+                </Menu>
+                <Switch>
+                    <Route path={`${url}/counter`} component={Counter} exact />
+                    <Route path={`${url}/filters`} component={Filters} />
+                    <Route path={`${url}/articles`} component={ArticlesPage} />
+                    <Route path={`${url}/comments/:page`} component={CommentsPage} />
+                    <Redirect from={`${url}/comments`} to={`${url}/comments/1`}/>
+                    <Route path="*" component={NotFound} />
+                </Switch>
+            </div>
         )
+    }
+
+    renderLocalization() {
+        const { location } = this.props;
+        const newLang = location === 'ru' ? 'en' : 'ru';
+        return (
+            <div>
+                <a href={`/${newLang}`}>{dictionary[location]['switchLang']}</a>
+            </div>
+        );
     }
 
     handleTextChange = ev => {
@@ -66,4 +94,8 @@ class App extends Component {
     }
 }
 
-export default connect(null, { loadAllArticles })(App)
+export default connect((state, { match }) => {
+    return {
+        location: match.params.location
+    };
+}, { loadAllArticles })(App)

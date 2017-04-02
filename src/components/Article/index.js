@@ -9,12 +9,11 @@ import {articleByIdSelector} from '../../selectors'
 import './style.css'
 
 class Article extends Component {
-    /*
-     shouldComponentUpdate(nextProps, nextState) {
-     return nextProps.isOpen !== this.props.isOpen
-     }
+    static contextTypes = {
+        user: PropTypes.string,
+        dictionary: PropTypes.object
+    };
 
-     */
     componentWillMount() {
         this.checkAndLoad(this.props)
     }
@@ -27,17 +26,14 @@ class Article extends Component {
         if (!article || (!article.text && !article.loading)) loadArticleById(match.params.id)
     }
 
-    static contextTypes = {
-        user: PropTypes.string
-    }
-
     render() {
-        const {article, isOpen, toggleOpen} = this.props
-        if (!article) return null
+        const {article, isOpen, toggleOpen} = this.props;
+        if (!article) return null;
+        const { dictionary } = this.context;
 
         const body = isOpen
             ? <section>
-                <p>User: {this.context.user}</p>
+                <p>{dictionary['user']}: {this.context.user}</p>
                 {article.text}
                 {article.loading && <Loader />}
                 <CommentList article={article} ref={this.getCommentList}/>
@@ -46,7 +42,7 @@ class Article extends Component {
         return (
             <div>
                 <h3 onClick={toggleOpen}>{article.title}</h3>
-                <a href="#" onClick={this.handleDelete}>delete me</a>
+                <a href="#" onClick={this.handleDelete}>{dictionary['deleteArticle']}</a>
                 <CSSTransition
                     transitionName="article"
                     transitionEnterTimeout={500}

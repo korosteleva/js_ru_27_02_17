@@ -8,13 +8,19 @@ class Counter extends Component {
         count: PropTypes.number
     };
 
+    static contextTypes = {
+        dictionary: PropTypes.object
+    };
+
     render() {
-        const {count} = this.props
+        const {count} = this.props;
+        const { dictionary } = this.context;
+
         if (count > 5) return <Redirect to="/filters"/>
         return (
             <div>
-                <h3>Count: {count}</h3>
-                <a href="#" onClick={this.handleIncrement}>Increment me</a>
+                <h3>{dictionary['count']}: {count}</h3>
+                <a href="#" onClick={this.handleIncrement}>{dictionary['increment']}</a>
             </div>
         )
     }

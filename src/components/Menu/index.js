@@ -6,10 +6,15 @@ class Menu extends Component {
 
     };
 
+    static contextTypes = {
+        dictionary: PropTypes.object
+    };
+
     render() {
+        const { dictionary } = this.context;
         return (
             <div>
-                <h3>Menu</h3>
+                <h3>{dictionary.menu}</h3>
                 {this.props.children}
             </div>
         )

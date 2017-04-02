@@ -13,7 +13,8 @@ class CommentList extends Component {
     }
 
     static contextTypes = {
-        user: PropTypes.string
+        user: PropTypes.string,
+        dictionary: PropTypes.object
     }
 
     componentWillReceiveProps({isOpen, article, checkAndLoadArticleComments}) {
@@ -25,11 +26,12 @@ class CommentList extends Component {
     }
 
     render() {
-        const {isOpen, toggleOpen} = this.props
-//        console.log('---', this.size)
+        const {isOpen, toggleOpen} = this.props;
+        const { dictionary } = this.context;
+        const actionTitle = isOpen ? dictionary['hideComments'] : dictionary['showComments'];
         return (
             <div ref={this.getContainerRef}>
-                <a href="#" onClick={toggleOpen}>{isOpen ? 'hide' : 'show'} comments</a>
+                <a href="#" onClick={toggleOpen}>{actionTitle}</a>
                 {this.getBody()}
             </div>
         )
@@ -43,14 +45,16 @@ class CommentList extends Component {
     }
 
     getBody() {
-        const {article, loaded, isOpen} = this.props
-        if (!isOpen) return null
-        if (!loaded) return <Loader/>
+        const {article, loaded, isOpen} = this.props;
+        if (!isOpen) return null;
+        if (!loaded) return <Loader/>;
+
+        const { dictionary } = this.context;
 
         if (!article.comments || !article.comments.length) {
             return <div>
                 <h3>
-                    No comments yet
+                    {dictionary['emptyComments']}
                 </h3>
                 <NewCommentForm articleId={article.id} />
             </div>
@@ -59,7 +63,7 @@ class CommentList extends Component {
         const commentItems = article.comments.map(id => <li key={id}><Comment id={id} /></li>)
         return (
             <div>
-                user: {this.context.user}
+                {dictionary['user']}: {this.context.user}
                 <ul>
                     {commentItems}
                 </ul>

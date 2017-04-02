@@ -38,10 +38,11 @@ class CommentsPage extends Component {
     }
 
     getPaginator() {
-        const {total} = this.props
-        const items = []
+        const {total, match: { path }} = this.props;
+        const items = [];
         for (let i = 1; i <= Math.floor((total - 1) / 5) + 1; i++) {
-            items.push(<li key={i}><NavLink to={`/comments/${i}`} activeClassName="active">{i}</NavLink></li>)
+            const paginLink = path.replace(':page', i);
+            items.push(<li key={i}><NavLink to={paginLink} activeClassName="active">{i}</NavLink></li>)
         }
         return <ul>{items}</ul>
     }

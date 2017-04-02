@@ -6,7 +6,11 @@ class NewCommentForm extends Component {
     static propTypes = {
         articleId: PropTypes.string.isRequired,
         addComment: PropTypes.func.isRequired
-    }
+    };
+
+    static contextTypes = {
+        dictionary: PropTypes.object
+    };
 
     state = {
         text: '',
@@ -33,10 +37,11 @@ class NewCommentForm extends Component {
     }
 
     render() {
+        const { dictionary } = this.context;
         return (
             <form onSubmit = {this.handleSubmit}>
-                comment: <input type="text" value={this.state.text} onChange = {this.handleChange('text')}/>
-                user: <input type="text" value={this.state.user} onChange = {this.handleChange('user')}/>
+                {dictionary['comment']}: <input type="text" value={this.state.text} onChange = {this.handleChange('text')}/>
+                {dictionary['user']}: <input type="text" value={this.state.user} onChange = {this.handleChange('user')}/>
                 <input type = "submit"/>
             </form>
         )
